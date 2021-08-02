@@ -15,6 +15,8 @@ public class ApiRestMatriculaApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ApiRestMatriculaApplication.class, args);
+		
+		
 	}
 
 }

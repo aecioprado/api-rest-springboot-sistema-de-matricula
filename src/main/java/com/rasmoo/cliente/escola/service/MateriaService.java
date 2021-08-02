@@ -42,7 +42,7 @@ public class MateriaService implements IMateriaService {
 	}
 
 	@Override
-	public Boolean excluir(Long id) {
+	public Boolean excluirMateria(Long id) {
 		try {
 			this.materiaRepository.deleteById(id);
 			return true;
@@ -52,7 +52,7 @@ public class MateriaService implements IMateriaService {
 	}
 
 	@Override
-	public Boolean cadastar(MateriaEntity materia) {
+	public Boolean salvarMateria(MateriaEntity materia) {
 		try {
 			this.materiaRepository.save(materia);
 			return true;
@@ -62,7 +62,7 @@ public class MateriaService implements IMateriaService {
 	}
 
 	@Override
-	public MateriaEntity consultaPorId(Long id) {
+	public MateriaEntity consultarPorId(Long id) {
 		try {
 			Optional<MateriaEntity> materialOptional = this.materiaRepository.findById(id);
 
