@@ -64,7 +64,7 @@ public class MateriaController {
 	@PostMapping 
 	public ResponseEntity<Boolean> salvarMateria(@RequestBody MateriaEntity materia) { //RequestBody -> corpo da requisição
 		
-			return ResponseEntity.status(HttpStatus.OK).body(this.materiaService.salvarMateria(materia)); // corrigir o status
+			return ResponseEntity.status(HttpStatus.CREATED).body(this.materiaService.salvarMateria(materia)); // corrigir o status
 	}
 
 	// MÉTODO DELETE (EXCLUIR)
