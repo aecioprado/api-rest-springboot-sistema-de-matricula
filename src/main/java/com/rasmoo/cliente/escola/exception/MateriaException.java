@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 import lombok.Getter;
 
-// separar todas as exceções pelas devidas entidades
+// Cria um OBJETO DE EXCESSÃO
 
 @Getter // gera apenas os métodos getter
 public class MateriaException extends RuntimeException{
@@ -16,7 +16,7 @@ public class MateriaException extends RuntimeException{
 	
 	// construtor
 	public MateriaException(final String mensagem, final HttpStatus httpStatus) {
-		super(mensagem); // herança ? ou polimorfimo ? estudar o super
+		super(mensagem); // herança de RuntimeException
 		this.httpStatus = httpStatus;
 	}
 	

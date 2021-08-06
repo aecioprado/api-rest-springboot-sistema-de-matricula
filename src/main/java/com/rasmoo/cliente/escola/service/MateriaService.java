@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.rasmoo.cliente.escola.entity.MateriaEntity;
+import com.rasmoo.cliente.escola.exception.MateriaException;
 import com.rasmoo.cliente.escola.repository.IMateriaRepository;
 
 @Service // Bean
@@ -18,23 +20,30 @@ public class MateriaService implements IMateriaService {
 
 	@Override
 	public Boolean atualizar(MateriaEntity materia) {
+
+		// instancia um novo objeto entity que recebe como atribuição o id do objeto
+		// passado no método
+
 		try {
 
-			// instancia um novo objeto entity que recebe como atribuição o id do objeto
-			// passado no método
-			MateriaEntity materiaEntityAtualizada = this.materiaRepository.findById(materia.getId()).get();
+			Optional<MateriaEntity> materiaOptional = this.materiaRepository.findById(materia.getId());
 
-			// atualizamos todos os valores
-			materiaEntityAtualizada.setNome(materia.getNome());
-			materiaEntityAtualizada.setCodigo(materia.getCodigo());
-			materiaEntityAtualizada.setHoras(materia.getHoras());
-			materiaEntityAtualizada.setNome(materia.getNome());
-			materiaEntityAtualizada.setFrequencia(materia.getFrequencia());
+			if (materiaOptional.isPresent()) {
+				MateriaEntity materiaEntityAtualizada = materiaOptional.get();
 
-			// salvamos as alteracoes
-			this.materiaRepository.save(materiaEntityAtualizada);
+				// atualizamos todos os valores
+				materiaEntityAtualizada.setNome(materia.getNome());
+				materiaEntityAtualizada.setCodigo(materia.getCodigo());
+				materiaEntityAtualizada.setHoras(materia.getHoras());
+				materiaEntityAtualizada.setNome(materia.getNome());
+				materiaEntityAtualizada.setFrequencia(materia.getFrequencia());
 
-			return true;
+				// salvamos as alteracoes
+				this.materiaRepository.save(materiaEntityAtualizada);
+
+				return true;
+			}
+			return false;
 
 		} catch (Exception e) {
 			return false;
@@ -64,29 +73,30 @@ public class MateriaService implements IMateriaService {
 	@Override
 	public MateriaEntity consultarPorId(Long id) {
 		try {
-			Optional<MateriaEntity> materialOptional = this.materiaRepository.findById(id);
+			Optional<MateriaEntity> materialOptional = this.materiaRepository.findById(id); // Atenção ao optional
 
 			// validar
 			if (materialOptional.isPresent()) {
 				return materialOptional.get(); // retorna o objeto se ele existir
 			}
+			throw new MateriaException("Materia não encontrada", HttpStatus.NOT_FOUND);
 
+		} catch (MateriaException m) {
+			throw m;
 		} catch (Exception e) {
-			e.getMessage();
+			return null;
 		}
-		return null;
 	}
 
 	@Override
 	public List<MateriaEntity> listarMaterias() {
-		
+
 		try {
 			return this.materiaRepository.findAll();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			return new ArrayList<>();
 		}
-		
-		
+
 	}
 
 }
