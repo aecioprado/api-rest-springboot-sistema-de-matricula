@@ -53,10 +53,13 @@ public class MateriaService implements IMateriaService {
 	@Override
 	public Boolean excluirMateria(Long id) {
 		try {
+			this.consultarPorId(id);
 			this.materiaRepository.deleteById(id);
 			return true;
+		} catch (MateriaException m) {
+			throw m;
 		} catch (Exception e) {
-			return false;
+			throw e;
 		}
 	}
 
@@ -84,7 +87,7 @@ public class MateriaService implements IMateriaService {
 		} catch (MateriaException m) {
 			throw m;
 		} catch (Exception e) {
-			return null;
+			throw new MateriaException("Erro interno identificado. Contate o suporte",HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
