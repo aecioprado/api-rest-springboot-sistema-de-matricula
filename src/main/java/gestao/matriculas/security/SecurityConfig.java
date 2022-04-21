@@ -46,10 +46,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/login/**")
+                .antMatchers(HttpMethod.POST,"/auth/token/**")
                 .permitAll()
-                .antMatchers("/materias/**")
-                .hasRole("PROFESSOR")
+                .antMatchers("/usuarios/**")
+                .authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(JwtAuthenticationFilter(),UsernamePasswordAuthenticationFilter.class);
@@ -57,6 +57,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        super.configure(web);
+        web.ignoring().antMatchers(
+                "/v2/api-docs",
+                "/configuration/ui",
+                "/swagger-resources/**",
+                "/configuration/security",
+                "/swagger-ui.html",
+                "/webjars/**");
     }
 }

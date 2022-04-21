@@ -1,12 +1,10 @@
 package gestao.matriculas.controller;
 
-import antlr.Token;
 import gestao.matriculas.domain.Usuario;
 import gestao.matriculas.dto.CredenciaisDto;
 import gestao.matriculas.dto.TokenDto;
 import gestao.matriculas.security.JwtTokenService;
 import gestao.matriculas.service.UserDetailsServiceImpl;
-import gestao.matriculas.service.UsuarioService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,19 +17,19 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/")
 @AllArgsConstructor
-public class HomeController {
+public class AuthController {
 
     @Autowired
     private final UserDetailsServiceImpl userDetailsService;
 
-    @PostMapping("login")
-    public TokenDto login(@RequestBody CredenciaisDto credenciaisDto) {
+    @PostMapping("auth/token")
+    public TokenDto getToken(@RequestBody CredenciaisDto credenciaisDto) {
         try {
             Usuario usuario = new Usuario();
             usuario.setLogin(credenciaisDto.getLogin());
             usuario.setSenha(credenciaisDto.getSenha());
            UserDetails usuarioAutenticado = userDetailsService.autenticacao(usuario);
-           String token = JwtTokenService.TOKEN_PREFIX + JwtTokenService.generateToken(usuario);
+           String token = JwtTokenService.generateToken(usuario);
            return new TokenDto(usuario.getLogin(), token);
 
         } catch (UsernameNotFoundException e) {

@@ -3,6 +3,7 @@ package gestao.matriculas.controller;
 import gestao.matriculas.domain.Usuario;
 import gestao.matriculas.dto.CredenciaisDto;
 import gestao.matriculas.dto.TokenDto;
+import gestao.matriculas.dto.UsuarioDto;
 import gestao.matriculas.repository.UsuarioRepository;
 import gestao.matriculas.service.UsuarioService;
 import lombok.AllArgsConstructor;
@@ -15,10 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping("usuarios")
 @AllArgsConstructor
 
 public class UsuarioController {
@@ -34,30 +37,48 @@ public class UsuarioController {
     @Autowired
     private final UsuarioRepository usuarioRepository;
 
-    @GetMapping
+    @GetMapping("/listar")
     @ResponseStatus(HttpStatus.OK)
-    public List<Usuario> getAll() {
-        return usuarioRepository.findAll();
+    public List<UsuarioDto> listarTudo() {
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        List<UsuarioDto> usuarioDtos = usuarios.stream().map(e -> UsuarioDto.semSenha(e)).collect(Collectors.toList());
+        return usuarioDtos;
     }
 
-    @GetMapping("/usuario-autenticado")
-    public String getUsername() {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        return securityContext.getAuthentication().getName();
+    @GetMapping("/listar/{usuarioId}")
+    @ResponseStatus(HttpStatus.OK)
+    public UsuarioDto listarPorId(@PathVariable("usuarioId") Integer usuarioId) {
+        var usuarioCarregado =  usuarioRepository.findById(usuarioId).get();
+        return  UsuarioDto.semSenha(usuarioCarregado);
     }
 
-    @PostMapping
+    @PostMapping("/novo")
     @ResponseStatus(HttpStatus.CREATED)
-    public Usuario create(@RequestBody Usuario usuario) {
-        String senhaEncriptada = usuario.getSenha();
+    public Usuario criar(@RequestBody Usuario usuario) {
+        var senhaEncriptada = usuario.getSenha();
         usuario.setSenha(passwordEncoder().encode(senhaEncriptada));
         return usuarioService.save(usuario);
     }
 
-    @PostMapping("/auth")
-    public TokenDto autenticacao(@RequestBody CredenciaisDto credenciais){
-    return null;
+    @PatchMapping("/{usuarioId}/editar")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Usuario editar(@PathVariable("usuarioId") Integer usuarioId, @RequestBody Usuario usuarioEditado) {
+        var usuarioCarregado = usuarioRepository.findById(usuarioId).get();
+        usuarioEditado.setId(usuarioCarregado.getId());
+        return usuarioService.save(usuarioEditado);
     }
+
+    @DeleteMapping("/{usuarioId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void excluir(@PathVariable("usuarioId") Integer usuarioId) {
+        var usuario = usuarioRepository.findById(usuarioId).get();
+        if(usuario == null){
+            throw new RuntimeException("Recurso "+usuario+" não existe.");
+        }
+        usuarioRepository.delete(usuario);
+    }
+
+
 
 
 }

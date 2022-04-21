@@ -1,13 +1,17 @@
 package gestao.matriculas.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import gestao.matriculas.constants.enums.SexoEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -20,7 +24,10 @@ public class Usuario implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nome;
-    private String sexo;
+    private SexoEnum sexo;
+
+    @Column(nullable = true, length = 11)
+    @CPF
     private String cpf;
 
     @OneToMany(fetch = FetchType.EAGER)
@@ -30,17 +37,31 @@ public class Usuario implements Serializable {
             joinColumns = @JoinColumn(name ="usuario_id", referencedColumnName = "id", table = "usuario"),
             inverseJoinColumns = @JoinColumn(name="perfil_id", referencedColumnName = "id", table ="perfil")
     )
-    private List<Perfil> perfis; // um usuário tem 1 ou mais perfis de acesso
-    private String tipoUsuario;
+    private List<Perfil> perfis;
+
+    @Column(nullable = true)
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataNascimento;
-    private String idadeAtual;
+
+    @Column(updatable = false)
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataCadastro;
-    private LocalDate ultimaModificacao;
-    private LocalDate ultimoAcesso;
-    private LocalDate criadoEm;
+
+    @Column(nullable = false)
     private String email;
+
+    @Column(nullable = false, updatable = false)
     private String login;
+
+    @Column(nullable = false)
     private String senha;
-    private boolean ativo;
+
+    private boolean ativo = Boolean.TRUE;
+
+    // configura a data de criacao no momento da persistencia no banco
+    @PrePersist
+    public void prePersistDataCadastro(){
+        setDataCadastro(LocalDate.now());
+    }
 
 }
