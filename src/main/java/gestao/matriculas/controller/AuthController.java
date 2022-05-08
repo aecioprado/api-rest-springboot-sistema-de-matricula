@@ -3,7 +3,7 @@ package gestao.matriculas.controller;
 import gestao.matriculas.domain.Usuario;
 import gestao.matriculas.dto.CredenciaisDto;
 import gestao.matriculas.dto.TokenDto;
-import gestao.matriculas.security.JwtTokenService;
+import gestao.matriculas.authentication.JwtTokenProvider;
 import gestao.matriculas.service.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +26,16 @@ public class AuthController {
     public TokenDto getToken(@RequestBody CredenciaisDto credenciaisDto) {
         try {
             Usuario usuario = new Usuario();
-            usuario.setLogin(credenciaisDto.getLogin());
+            usuario.setEmail(credenciaisDto.getEmail());
             usuario.setSenha(credenciaisDto.getSenha());
            UserDetails usuarioAutenticado = userDetailsService.autenticacao(usuario);
-           String token = JwtTokenService.generateToken(usuario);
-           return new TokenDto(usuario.getLogin(), token);
+           String token = JwtTokenProvider.generateToken(usuario);
+           return new TokenDto(usuario.getEmail(), token);
 
         } catch (UsernameNotFoundException e) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
+
+
 }

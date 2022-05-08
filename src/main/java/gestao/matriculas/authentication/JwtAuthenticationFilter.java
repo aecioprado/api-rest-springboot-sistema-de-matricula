@@ -1,4 +1,4 @@
-package gestao.matriculas.security;
+package gestao.matriculas.authentication;
 
 import gestao.matriculas.service.UserDetailsServiceImpl;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,10 +29,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if(authorization != null && authorization.startsWith("Bearer")){
                 String token = authorization.split(" ")[1];
-                boolean isValido = JwtTokenService.isTokenValid(token);
+                boolean isValido = JwtTokenProvider.isTokenValid(token);
 
                 if(isValido){
-                   String loginUsuario = JwtTokenService.getLoginFromToken(token);
+                   String loginUsuario = JwtTokenProvider.getLoginFromToken(token);
 
                    UserDetails usuario = userDetailsService.loadUserByUsername(loginUsuario);
 

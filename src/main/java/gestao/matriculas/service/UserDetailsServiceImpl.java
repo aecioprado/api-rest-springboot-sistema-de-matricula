@@ -17,7 +17,6 @@ import java.util.Collection;
 import static java.util.stream.Collectors.toList;
 
 @Service
-@Transactional
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
@@ -27,7 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UsuarioRepository usuarioRepository;
 
     public UserDetails autenticacao(Usuario usuario){
-       UserDetails usuarioCarregado = loadUserByUsername(usuario.getLogin());
+       UserDetails usuarioCarregado = loadUserByUsername(usuario.getEmail());
        boolean isPasswordMatches = passwordEncoder.matches(usuario.getSenha(), usuarioCarregado.getPassword());
        if(isPasswordMatches){
            return usuarioCarregado;
@@ -36,9 +35,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        Usuario usuario = usuarioRepository.findByLogin(login)
+        Usuario usuario = usuarioRepository.findDistinctByEmail(email)
                 .orElseThrow(()-> new UsernameNotFoundException("Usuário não encontrado"));
 
         Collection<SimpleGrantedAuthority> perfis = usuario.getPerfis().stream()
@@ -46,7 +45,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         System.out.println(perfis);
 
-        User user = new User(usuario.getLogin(), usuario.getSenha(), perfis);
+        User user = new User(usuario.getEmail(), usuario.getSenha(), perfis);
         return user;
         };
 

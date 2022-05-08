@@ -1,5 +1,6 @@
-package gestao.matriculas.security;
+package gestao.matriculas.config;
 
+import gestao.matriculas.authentication.JwtAuthenticationFilter;
 import gestao.matriculas.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -48,9 +49,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/auth/token/**")
                 .permitAll()
-                .antMatchers("/usuarios/**")
-                .authenticated()
-                .anyRequest().authenticated()
+                .antMatchers("/usuarios/novo/**")
+                .permitAll()
+               // .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(JwtAuthenticationFilter(),UsernamePasswordAuthenticationFilter.class);
     }
