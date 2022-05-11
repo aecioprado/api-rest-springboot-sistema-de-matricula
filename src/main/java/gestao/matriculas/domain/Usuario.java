@@ -1,12 +1,12 @@
 package gestao.matriculas.domain;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Data
@@ -18,32 +18,27 @@ public class Usuario implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
-    @Column(nullable = false)
-    private String email;
-    @Column(nullable = true, length = 11)
-    private String cpf;
+    private String username;
+    private String password;
 
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "usuarios_perfis",
-            uniqueConstraints=@UniqueConstraint(columnNames={"usuario_id","perfil_id"}),
-            joinColumns = @JoinColumn(name ="usuario_id", referencedColumnName = "id", table = "usuario"),
-            inverseJoinColumns = @JoinColumn(name="perfil_id", referencedColumnName = "id", table ="perfil")
+    @JoinTable(name = "usuarios_roles",
+            uniqueConstraints=@UniqueConstraint(columnNames={"usuario_id","role_id"}),
+            joinColumns = @JoinColumn(name ="usuario_id", referencedColumnName = "id", table = "usuario", unique = false),
+            inverseJoinColumns = @JoinColumn(name="role_id", referencedColumnName = "id", table ="role", unique = false)
     )
-    private List<Perfil> perfis;
+    private List<Role> roles;
 
-    @Column(nullable = true)
-    private LocalDate dataNascimento;
-
-    @Column(updatable = false)
-    private LocalDate dataCadastro;
-
-    @Column(nullable = false)
-    private String senha;
-
-
-    @PrePersist
-    public void prePersistDataCadastro(){
-        setDataCadastro(LocalDate.now());
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Usuario usuario = (Usuario) o;
+        return id != null && Objects.equals(id, usuario.id);
     }
 
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

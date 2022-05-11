@@ -1,4 +1,4 @@
-package gestao.matriculas.controller;
+package gestao.matriculas.config.controller;
 
 import gestao.matriculas.domain.Usuario;
 import gestao.matriculas.service.UsuarioService;
@@ -12,11 +12,10 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping("usuarios")
-@AllArgsConstructor
 public class UsuarioController {
 
     @Autowired
-    private final UsuarioService usuarioService;
+    private UsuarioService usuarioService;
 
     @GetMapping("/listar")
     @ResponseStatus(HttpStatus.OK)
@@ -56,34 +55,6 @@ public class UsuarioController {
         }
     }
 
-    /*
-    @GetMapping("/perfis")
-    @ResponseStatus(HttpStatus.OK)
-    public List<UsuarioDto> listarPerfis() {
-        List<Usuario> usuarios = usuarioRepository.findAll();
-        List<UsuarioDto> usuarioDtos = usuarios.stream().map(e -> UsuarioDto.semSenha(e)).collect(Collectors.toList());
-        return usuarioDtos;
-
-    }
-
-    @GetMapping("/perfis/{id}/editar")
-    @ResponseStatus(HttpStatus.OK)
-    public List<UsuarioDto> listarPerfilPorId() {
-        List<Usuario> usuarios = usuarioRepository.findAll();
-        List<UsuarioDto> usuarioDtos = usuarios.stream().map(e -> UsuarioDto.semSenha(e)).collect(Collectors.toList());
-        return usuarioDtos;
-    }
-
-    @DeleteMapping("/perfis/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void excluirPerfil(@PathVariable("usuarioId") Integer usuarioId) {
-        var usuario = usuarioRepository.findById(usuarioId).get();
-        if (usuario == null) {
-            throw new RuntimeException("Recurso " + usuario + " não existe.");
-        }
-        usuarioRepository.delete(usuario);
-    }
-    */
 
 }
 

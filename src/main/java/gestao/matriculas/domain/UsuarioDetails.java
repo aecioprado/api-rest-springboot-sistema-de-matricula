@@ -8,32 +8,31 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class UsuarioLogin implements UserDetails{
+// implementa o objeto UserDetails usado no contexto do Spring security
+public class UsuarioDetails implements UserDetails {
 
     private final Usuario usuario;
 
-    public UsuarioLogin(Usuario usuario) {
+    public UsuarioDetails(Usuario usuario) {
         this.usuario = usuario;
     }
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        for (Perfil perfil: usuario.getPerfis()){
-            authorities.add(new SimpleGrantedAuthority(perfil.getNome()));
-        }
+        usuario.getRoles().forEach(roles -> new SimpleGrantedAuthority(roles.getNome()));
         return authorities;
     }
 
     @Override
     public String getPassword() {
-        return this.usuario.getSenha();
+        return this.usuario.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return this.usuario.getEmail();
+        return this.usuario.getUsername();
     }
 
     @Override

@@ -1,11 +1,13 @@
 package gestao.matriculas.config;
 
-import gestao.matriculas.authentication.JwtAuthenticationFilter;
-import gestao.matriculas.service.UserDetailsServiceImpl;
+import gestao.matriculas.security.JwtAcessDeniedHandler;
+import gestao.matriculas.security.JwtAuthenticationEntryPoint;
+import gestao.matriculas.security.JwtAuthenticationFilter;
+import gestao.matriculas.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -21,39 +23,45 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAcessDeniedHandler jwtAcessDeniedHandler;
+    private final UsuarioService usuarioService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Autowired
-    private UserDetailsServiceImpl userDetailsService;
-
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAcessDeniedHandler jwtAcessDeniedHandler, UsuarioService usuarioService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.jwtAcessDeniedHandler = jwtAcessDeniedHandler;
+        this.usuarioService = usuarioService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    @Bean
-    public OncePerRequestFilter JwtAuthenticationFilter(){
-        return new JwtAuthenticationFilter(userDetailsService);
-    }
-
+    // configura a autenticação
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(usuarioService).passwordEncoder(bCryptPasswordEncoder);
+    }
+
+    // Objeto que gerencia as autenticações
+    @Bean
+    public AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http
-                .csrf().disable()
+        http.csrf().disable().cors().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().authorizeRequests().antMatchers("/login/**","/login/cadastro","/login/recuperarsenha").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                .authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/auth/token/**")
-                .permitAll()
-                .antMatchers("/usuarios/novo/**")
-                .permitAll()
-               // .anyRequest().authenticated()
+                .exceptionHandling().accessDeniedHandler(jwtAcessDeniedHandler) //acesso negado
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint) //acesso não autenticado
                 .and()
-                .addFilterBefore(JwtAuthenticationFilter(),UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override

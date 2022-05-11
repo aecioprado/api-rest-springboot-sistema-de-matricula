@@ -1,6 +1,6 @@
 package gestao.matriculas.dto;
 
-import gestao.matriculas.domain.Perfil;
+import gestao.matriculas.domain.Role;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -11,7 +11,7 @@ public class UsuarioDto {
     private Integer id;
     private String nome;
     private String cpf;
-    private List<Perfil> perfis;
+    private List<Role> perfis;
     private LocalDate dataNascimento;
     private LocalDate dataCadastro;
     private String email;

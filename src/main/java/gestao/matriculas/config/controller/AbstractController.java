@@ -1,10 +1,10 @@
-package gestao.matriculas.controller;
+package gestao.matriculas.config.controller;
 
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public interface ControllerInterface<T>{
+public abstract class AbstractController <T>{
 
     public abstract ResponseEntity<T> listOneResource();
 
@@ -14,5 +14,5 @@ public interface ControllerInterface<T>{
 
     public abstract ResponseEntity<T> updateResource();
 
-    public abstract boolean deleteResource();
+    //public abstract ResponseEntity<> deleteResource();
 }

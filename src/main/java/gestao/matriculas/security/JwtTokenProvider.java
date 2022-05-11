@@ -1,10 +1,10 @@
-package gestao.matriculas.authentication;
+package gestao.matriculas.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import gestao.matriculas.domain.UsuarioLogin;
+import gestao.matriculas.domain.UsuarioDetails;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,15 +25,17 @@ import static java.util.Arrays.stream;
 @Component
 public class JwtTokenProvider {
 
-    //#1
-    public String generateJwtToken(UsuarioLogin usuarioLogin) {
-        String[] roles = getRolesFromUser(usuarioLogin);
-        return JWT.create()
+    // cria o token após obter sucesso na autenticação do usuário
+    public String generateToken(UsuarioDetails usuario, HttpServletResponse response) {
+        String[] roles = getRolesFromUser(usuario);
+        String token = JwtTokenUtil.TOKEN_PREFIX + JWT.create()
                 .withIssuedAt(new Date())
-                .withSubject(usuarioLogin.getUsername())
-                .withArrayClaim(JwtUtil.AUTHORITIES, roles)
-                .withExpiresAt(new Date(System.currentTimeMillis()+JwtUtil.EXPIRATION_TIME))
-                .sign(Algorithm.HMAC512(JwtUtil.SECRET_KEY));
+                .withSubject(usuario.getUsername())
+                .withArrayClaim("ROLES", roles)
+                .withExpiresAt(new Date(System.currentTimeMillis()+ JwtTokenUtil.EXPIRATION_TIME))
+                .sign(Algorithm.HMAC512(JwtTokenUtil.SECRET_KEY));
+        response.addHeader(JwtTokenUtil.JWT_TOKEN_HEADER,token);
+        return token;
     }
 
     //#2
@@ -42,7 +44,7 @@ public class JwtTokenProvider {
         return stream(rolesFromToken).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
 
-    //#3
+    // configura as informações do usuário no contexto de segurança do spring, caso ele seja autenticado.
     public Authentication getAuthentication(String username, List<GrantedAuthority> roles, HttpServletRequest request){
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                 username, null, roles);
@@ -69,23 +71,24 @@ public class JwtTokenProvider {
 
     private String[] getRolesFromToken(String token) {
         JWTVerifier verifier = getJWTVerifier();
-        return verifier.verify(token).getClaim(JwtUtil.AUTHORITIES).asArray(String.class);
+        return verifier.verify(token).getClaim("ROLES").asArray(String.class);
     }
 
+    // retorna uma instância do JWTVerifier
     private JWTVerifier getJWTVerifier() {
         JWTVerifier verifier;
         try {
-            Algorithm algorithm = Algorithm.HMAC512(JwtUtil.SECRET_KEY);
+            Algorithm algorithm = Algorithm.HMAC512(JwtTokenUtil.SECRET_KEY);
             verifier = JWT.require(algorithm).build();
         } catch (JWTVerificationException exception) {
-            throw new JWTVerificationException(JwtUtil.TOKEN_CHECK_MSG);
+            throw new JWTVerificationException(JwtTokenUtil.TOKEN_VALIDATION_MSG);
         }
         return verifier;
     }
 
-    private String[] getRolesFromUser(UsuarioLogin usuarioLogin) {
+    private String[] getRolesFromUser(UsuarioDetails usuario) {
         List<String> roles = new ArrayList<>();
-        for(GrantedAuthority grantedAuthority: usuarioLogin.getAuthorities()){
+        for(GrantedAuthority grantedAuthority: usuario.getAuthorities()){
             roles.add(grantedAuthority.getAuthority());
         }
         return roles.toArray(new String[0]);

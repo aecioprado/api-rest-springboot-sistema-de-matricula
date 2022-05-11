@@ -11,7 +11,5 @@ import java.util.Optional;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
-    Optional<Usuario> findDistinctByEmail(String email);
-
-    Optional<List<Usuario>> findByDataCadastroBetween(LocalDate dataInicial, LocalDate dataFinal);
+    Usuario findByUsername(String username);
 }
