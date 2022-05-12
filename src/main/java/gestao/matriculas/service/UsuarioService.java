@@ -32,6 +32,16 @@ public class UsuarioService implements UserDetailsService{
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    public Usuario findByUsername(String username){
+
+        Usuario usuarioCarregado = usuarioRepository.findByUsername(username);
+
+        if(usuarioCarregado == null){
+            throw new UsernameNotFoundException("Usuário não encontrado.");
+        }
+
+        return usuarioCarregado;
+    }
 
 
     public List<Usuario> getAll() {

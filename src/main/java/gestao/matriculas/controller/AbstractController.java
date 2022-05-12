@@ -1,4 +1,4 @@
-package gestao.matriculas.config.controller;
+package gestao.matriculas.controller;
 
 import org.springframework.http.ResponseEntity;
 

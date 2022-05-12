@@ -26,16 +26,15 @@ import static java.util.Arrays.stream;
 public class JwtTokenProvider {
 
     // cria o token após obter sucesso na autenticação do usuário
-    public String generateToken(UsuarioDetails usuario, HttpServletResponse response) {
+    public String generateToken(UsuarioDetails usuario) {
         String[] roles = getRolesFromUser(usuario);
-        String token = JwtTokenUtil.TOKEN_PREFIX + JWT.create()
+
+        return JwtTokenUtil.TOKEN_PREFIX + JWT.create()
                 .withIssuedAt(new Date())
                 .withSubject(usuario.getUsername())
                 .withArrayClaim("ROLES", roles)
                 .withExpiresAt(new Date(System.currentTimeMillis()+ JwtTokenUtil.EXPIRATION_TIME))
                 .sign(Algorithm.HMAC512(JwtTokenUtil.SECRET_KEY));
-        response.addHeader(JwtTokenUtil.JWT_TOKEN_HEADER,token);
-        return token;
     }
 
     //#2

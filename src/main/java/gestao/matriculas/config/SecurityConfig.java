@@ -46,8 +46,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     // Objeto que gerencia as autenticações
     @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
-        return super.authenticationManager();
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Override

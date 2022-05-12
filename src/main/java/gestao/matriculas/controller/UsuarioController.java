@@ -1,4 +1,4 @@
-package gestao.matriculas.config.controller;
+package gestao.matriculas.controller;
 
 import gestao.matriculas.domain.Usuario;
 import gestao.matriculas.service.UsuarioService;
@@ -11,39 +11,33 @@ import java.util.List;
 
 @CrossOrigin
 @RestController
-@RequestMapping("usuarios")
+@RequestMapping("/usuarios")
 public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
 
     @GetMapping("/listar")
-    @ResponseStatus(HttpStatus.OK)
     public List<Usuario> listarUsuarios(){
         return usuarioService.getAll();
     }
 
     @GetMapping("/listar/{usuarioId}")
-    @ResponseStatus(HttpStatus.OK)
     public Usuario listarUsuarioPorId(@PathVariable("usuarioId") Long usuarioId) {
         return usuarioService.getOneById(usuarioId).get();
     }
 
     @PostMapping("/novo")
-    @ResponseStatus(HttpStatus.CREATED)
     public Usuario criarUsuario(@RequestBody Usuario usuario) {
-
         return usuarioService.save(usuario);
     }
 
     @PutMapping("/{usuarioId}/editar")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public Usuario editarUsuario(@PathVariable("usuarioId") Long usuarioId, @RequestBody Usuario usuarioEditado) {
         return usuarioService.update(usuarioId, usuarioEditado);
     }
 
     @DeleteMapping("/{usuarioId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public String excluirUsuario(@PathVariable("usuarioId") Long usuarioId) {
         var isRemoved = usuarioService.delete(usuarioId);
 
