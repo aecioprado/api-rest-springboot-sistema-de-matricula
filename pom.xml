@@ -6,16 +6,17 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.3</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<version>2.7.3</version>
+		<relativePath />
 	</parent>
-	<groupId>gestao.matriculas</groupId>
-	<artifactId>api-gestao-matricula-escolar</artifactId>
+	<!--nice to consult this guide <https://maven.apache.org/guides/introduction/introduction-to-the-pom.html> -->
+	<groupId>com.aecio.users.management</groupId> <!--groupId uniquely identifies your project across all projects-->
+	<artifactId>users-management-api</artifactId> <!--artifactId is the name of the jar without version-->
 	<version>0.0.1-SNAPSHOT</version>
-	<name>api_gestao_matricula_escolar</name>
-	<description>sistema de gestao de matricula escolar</description>
+
 	<properties>
-		<java.version>11</java.version>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -29,6 +30,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
