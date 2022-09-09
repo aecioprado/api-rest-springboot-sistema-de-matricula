@@ -12,6 +12,7 @@
 	<!--nice to consult this guide <https://maven.apache.org/guides/introduction/introduction-to-the-pom.html> -->
 	<groupId>com.aecio.users.management</groupId> <!--groupId uniquely identifies your project across all projects-->
 	<artifactId>users-management-api</artifactId> <!--artifactId is the name of the jar without version-->
+	<name>users-management-api</name>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
