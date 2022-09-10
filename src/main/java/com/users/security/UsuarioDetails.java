@@ -1,5 +1,6 @@
-package com.users.domain.model;
+package com.users.security;
 
+import com.users.domain.model.Usuario;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
