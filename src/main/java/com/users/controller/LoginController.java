@@ -1,7 +1,7 @@
 package com.users.controller;
 
 import com.users.domain.model.Usuario;
-import com.users.domain.model.UsuarioDetails;
+import com.users.security.UsuarioDetails;
 import com.users.security.JwtTokenProvider;
 import com.users.security.JwtTokenUtil;
 import com.users.domain.dto.LoginDTO;
@@ -31,7 +31,7 @@ public class LoginController {
 
     @PostMapping
     public ResponseEntity<LoginDTO> login(@RequestBody Usuario usuario, HttpServletResponse response){
-        authenticate(usuario.getUsername(),usuario.getPassword());
+        authenticate(usuario.getUsername(), usuario.getPassword());
         Usuario usuarioLogin = usuarioService.findByUsername(usuario.getUsername());
         UsuarioDetails usuarioDetails = new UsuarioDetails(usuarioLogin);
         String token = jwtTokenProvider.generateToken(usuarioDetails);

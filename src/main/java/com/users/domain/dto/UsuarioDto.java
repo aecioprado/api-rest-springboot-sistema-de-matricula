@@ -1,6 +1,6 @@
 package com.users.domain.dto;
 
-import com.users.domain.model.Role;
+import com.users.domain.model.Permissao;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -11,7 +11,7 @@ public class UsuarioDto {
     private Integer id;
     private String nome;
     private String cpf;
-    private List<Role> perfis;
+    private List<Permissao> perfis;
     private LocalDate dataNascimento;
     private LocalDate dataCadastro;
     private String email;
@@ -43,11 +43,11 @@ public class UsuarioDto {
         this.cpf = cpf;
     }
 
-    public List<Role> getPerfis() {
+    public List<Permissao> getPerfis() {
         return perfis;
     }
 
-    public void setPerfis(List<Role> perfis) {
+    public void setPerfis(List<Permissao> perfis) {
         this.perfis = perfis;
     }
 

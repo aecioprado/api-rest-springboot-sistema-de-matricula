@@ -1,7 +1,7 @@
 package com.users.service;
 
 import com.users.domain.model.Usuario;
-import com.users.domain.model.UsuarioDetails;
+import com.users.security.UsuarioDetails;
 import com.users.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
