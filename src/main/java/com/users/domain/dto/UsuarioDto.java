@@ -1,21 +1,20 @@
 package com.users.domain.dto;
 
 import com.users.domain.model.Permissao;
-import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.List;
-@Data
+
 public class UsuarioDto {
 
     private Integer id;
     private String nome;
     private String cpf;
-    private List<Permissao> perfis;
+    private List<Permissao> permissoes;
     private LocalDate dataNascimento;
     private LocalDate dataCadastro;
     private String email;
-    private String login;
+    private String nomeUsuario;
     private boolean ativo;
     private String senha;
 
@@ -43,13 +42,11 @@ public class UsuarioDto {
         this.cpf = cpf;
     }
 
-    public List<Permissao> getPerfis() {
-        return perfis;
+    public List<Permissao> getPermissoes() {
+        return permissoes;
     }
 
-    public void setPerfis(List<Permissao> perfis) {
-        this.perfis = perfis;
-    }
+    public void setPermissoes(List<Permissao> perfis) {this.permissoes = perfis; }
 
     public LocalDate getDataNascimento() {
         return dataNascimento;
@@ -75,12 +72,12 @@ public class UsuarioDto {
         this.email = email;
     }
 
-    public String getLogin() {
-        return login;
+    public String getNomeUsuario() {
+        return nomeUsuario;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setNomeUsuario(String nomeUsuario) {
+        this.nomeUsuario = nomeUsuario;
     }
 
     public boolean isAtivo() {
