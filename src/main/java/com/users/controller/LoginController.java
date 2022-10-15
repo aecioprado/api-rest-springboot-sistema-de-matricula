@@ -4,7 +4,7 @@ import com.users.domain.model.Usuario;
 import com.users.security.UsuarioDetails;
 import com.users.security.JwtTokenProvider;
 import com.users.security.JwtTokenUtil;
-import com.users.domain.dto.LoginDTO;
+import com.users.domain.dto.LoginDto;
 import com.users.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,19 +29,28 @@ public class LoginController {
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping
-    public ResponseEntity<LoginDTO> login(@RequestBody Usuario usuario, HttpServletResponse response){
-        authenticate(usuario.getUsername(), usuario.getPassword());
-        Usuario usuarioLogin = usuarioService.findByUsername(usuario.getUsername());
-        UsuarioDetails usuarioDetails = new UsuarioDetails(usuarioLogin);
+
+    @PostMapping()
+    public ResponseEntity<LoginDto> login(@RequestBody Usuario usuario, HttpServletResponse response){
+
+        authenticate(usuario.getLogin(), usuario.getSenha());
+
+        Usuario usuarioLogado = usuarioService.findByLogin(usuario.getLogin());
+
+
+        UsuarioDetails usuarioDetails = new UsuarioDetails(usuarioLogado);
+
         String token = jwtTokenProvider.generateToken(usuarioDetails);
+
         response.addHeader(JwtTokenUtil.JWT_TOKEN_HEADER, token);
-        LoginDTO loginDTO = new LoginDTO(usuario.getUsername(),token);
+
+        LoginDto loginDTO = new LoginDto(usuario.getLogin(),token);
+
         return new ResponseEntity<>(loginDTO, HttpStatus.OK);
     }
 
-    private void authenticate(String username, String password) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+    private void authenticate(String login, String password) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, password));
     }
 
     @PostMapping("/cadastro")

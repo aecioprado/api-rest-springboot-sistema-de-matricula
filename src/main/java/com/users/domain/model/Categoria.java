@@ -6,7 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
-@Entity
+
 public class Categoria implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,11 +14,14 @@ public class Categoria implements Serializable {
 
     private String descricao;
 
+    private Usuario usuario;
+
     public Categoria(){};
 
-    public Categoria(long categoriaId, String descricao){
+    public Categoria(long categoriaId, String descricao, Usuario usuario){
         this.categoriaId = categoriaId;
         this.descricao = descricao;
+        this.usuario = usuario;
     }
 
     public long getCategoriaId() {
@@ -35,6 +38,14 @@ public class Categoria implements Serializable {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     @Override

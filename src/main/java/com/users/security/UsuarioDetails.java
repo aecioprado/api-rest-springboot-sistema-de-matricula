@@ -1,6 +1,7 @@
 package com.users.security;
 
 import com.users.domain.model.Usuario;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,12 +10,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-// implementa o objeto UserDetails usado no contexto do Spring security
+// Implementa o objeto UserDetails usado para incluir o usuario no contexto de seguranca do Spring Security
 public class UsuarioDetails implements UserDetails {
+    @Autowired
+    private Usuario usuario;
 
-    private final Usuario usuario;
-
-    public UsuarioDetails(Usuario usuario) {
+    public UsuarioDetails(Usuario usuario){
         this.usuario = usuario;
     }
 
@@ -22,18 +23,18 @@ public class UsuarioDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        usuario.getRoles().forEach(roles -> new SimpleGrantedAuthority(roles.getNome()));
+        usuario.getPermissoes().forEach(roles -> new SimpleGrantedAuthority(roles.getDescricao()));
         return authorities;
     }
 
     @Override
     public String getPassword() {
-        return this.usuario.getPassword();
+        return this.usuario.getSenha();
     }
 
     @Override
     public String getUsername() {
-        return this.usuario.getUsername();
+        return this.usuario.getLogin();
     }
 
     @Override

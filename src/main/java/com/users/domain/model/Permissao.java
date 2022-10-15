@@ -2,26 +2,26 @@ package com.users.domain.model;
 
 import org.apache.logging.log4j.message.StringFormattedMessage;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 public class Permissao implements Serializable{
     @Id
-    private Long permissaoId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String descricao;
 
     public Permissao(){};
 
-    public Permissao(long permissaoId, String descricao){
-        this.permissaoId = permissaoId;
+    public Permissao(long id, String descricao){
+        this.id = id;
         this.descricao = descricao;
     }
 
     public Long getPermissaoId() {
-        return permissaoId;
+        return id;
     }
 
     public String getDescricao() {
@@ -29,7 +29,7 @@ public class Permissao implements Serializable{
     }
 
     public void setPermissaoId(Long permissaoId) {
-        this.permissaoId = permissaoId;
+        this.id = permissaoId;
     }
 
 
@@ -42,11 +42,11 @@ public class Permissao implements Serializable{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Permissao permissao = (Permissao) o;
-        return Objects.equals(permissaoId, permissao.permissaoId) && Objects.equals(descricao, permissao.descricao);
+        return Objects.equals(id, permissao.id) && Objects.equals(descricao, permissao.descricao);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(permissaoId, descricao);
+        return Objects.hash(id, descricao);
     }
 }

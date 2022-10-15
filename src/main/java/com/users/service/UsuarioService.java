@@ -24,9 +24,9 @@ public class UsuarioService implements UserDetailsService{
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public Usuario findByUsername(String username){
+    public Usuario findByLogin(String username){
 
-        Usuario usuarioCarregado = usuarioRepository.findByUsername(username);
+        Usuario usuarioCarregado = usuarioRepository.findByLogin(username);
 
         if(usuarioCarregado == null){
             throw new UsernameNotFoundException("Usuário não encontrado.");
@@ -47,7 +47,7 @@ public class UsuarioService implements UserDetailsService{
 
 
     public Usuario save(Usuario usuario) {
-        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         return usuarioRepository.save(usuario);
     }
 
@@ -64,7 +64,7 @@ public class UsuarioService implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-            Usuario usuario = usuarioRepository.findByUsername(username);
+            Usuario usuario = usuarioRepository.findByLogin(username);
 
             if (usuario == null){
                 throw new UsernameNotFoundException("Usuário não encontrado");

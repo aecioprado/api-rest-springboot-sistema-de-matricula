@@ -4,11 +4,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data // getters e setters
-@NoArgsConstructor // construtor vazio
 public class MateriaDto {
 
 	

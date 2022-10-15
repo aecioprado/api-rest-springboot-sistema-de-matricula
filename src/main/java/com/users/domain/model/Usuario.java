@@ -12,34 +12,29 @@ public class Usuario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long usuarioId;
-    //TODO
-    //private UUID uuid;
+    private Long id;
     private String nome;
     private String sobrenome;
     private LocalDate dataAniversario;
     private String login;
     private String email;
     private String senha;
-    private Categoria categoria;
-    private Endereco endereco;
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuarios_permissoes",
-            uniqueConstraints=@UniqueConstraint(columnNames={"usuarioId","permissaoId"}),
+            uniqueConstraints=@UniqueConstraint(columnNames={"usuario_id","permissao_id"}),
             joinColumns = @JoinColumn(name ="usuario_id", referencedColumnName = "id", table = "usuario", unique = false),
-            inverseJoinColumns = @JoinColumn(name="role_id", referencedColumnName = "id", table ="role", unique = false)
+            inverseJoinColumns = @JoinColumn(name="permissao_id", referencedColumnName = "id", table ="permissao", unique = false)
     )
-    private List<Permissao> permissaos = new ArrayList<>();
+    private List<Permissao> permissoes = new ArrayList<Permissao>();
 
-    // Campos de auditoria
     private LocalDateTime dataCriacao;
     private LocalDateTime dataModificacao;
     public Usuario(){};
 
-    public Usuario(Long usuarioId, String nome, String sobrenome, LocalDate dataAniversario, String login, String email,
-                   String senha, LocalDateTime dataCriacao, LocalDateTime dataModificacao, Categoria categoria, Endereco endereco) {
-        this.usuarioId = usuarioId;
+    public Usuario(Long id, String nome, String sobrenome, LocalDate dataAniversario, String login, String email,
+                   String senha, LocalDateTime dataCriacao, LocalDateTime dataModificacao) {
+        this.id = id;
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.dataAniversario = dataAniversario;
@@ -48,16 +43,15 @@ public class Usuario implements Serializable {
         this.senha = senha;
         this.dataCriacao = dataCriacao;
         this.dataModificacao = dataModificacao;
-        this.categoria = categoria;
-        this.endereco = endereco;
+
     }
 
     public Long getUsuarioId() {
-        return usuarioId;
+        return id;
     }
 
     public void setUsuarioId(Long usuarioId) {
-        this.usuarioId = usuarioId;
+        this.id = usuarioId;
     }
 
     public String getNome() {
@@ -108,28 +102,13 @@ public class Usuario implements Serializable {
         this.senha = senha;
     }
 
-    public Categoria getCategoria() {
-        return categoria;
+
+    public List<Permissao> getPermissoes() {
+        return permissoes;
     }
 
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
-    }
-
-    public Endereco getEndereco() {
-        return endereco;
-    }
-
-    public void setEndereco(Endereco endereco) {
-        this.endereco = endereco;
-    }
-
-    public List<Permissao> getPermissaos() {
-        return permissaos;
-    }
-
-    public void setPermissaos(List<Permissao> permissaos) {
-        this.permissaos = permissaos;
+    public void setPermissoes(List<Permissao> permissoes) {
+        this.permissoes = permissoes;
     }
 
     public LocalDateTime getDataCriacao() {
